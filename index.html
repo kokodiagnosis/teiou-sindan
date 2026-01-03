@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帝王救済・究極ハイブリッド鑑定</title>
+    <style>
+        :root { --main: #0f1c3f; --accent: #b21f1f; --gold: #c5a059; --bg-gold: #e6c888; }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-gold);
+            background-image: 
+                radial-gradient(ellipse at center, #ffd700 0%, #e6c888 60%, #b8860b 100%),
+                url('https://www.transparenttextures.com/patterns/stardust.png');
+            background-blend-mode: overlay;
+            font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fffcf5; max-width: 800px; margin: 30px auto; padding: 40px;
+            border: 4px double var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 4px; position: relative;
+        }
+        .container::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+            opacity: 0.4; pointer-events: none;
+        }
+        h1 { text-align: center; color: var(--main); font-size: 28px; border-bottom: 2px solid var(--gold); padding-bottom: 15px; margin-top: 0; letter-spacing: 2px; }
+        .setup-box { background: rgba(255,255,255,0.8); padding: 25px; border: 1px solid #d4af37; border-radius: 8px; position: relative; z-index: 1; }
+        .field { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--main); }
+        input, select { width: 100%; padding: 12px; border: 1px solid #bbb; border-radius: 4px; font-size: 16px; box-sizing: border-box; font-family: sans-serif; }
+        .main-btn {
+            width: 100%; padding: 16px; border: none; border-radius: 4px;
+            background: linear-gradient(to bottom, #1a2a6c, #0f1c3f);
+            color: #d4af37; font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: 0.3s; border: 1px solid var(--gold);
+        }
+        .main-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #q-screen, #result-screen { display: none; position: relative; z-index: 1; }
+        .q-text { font-size: 24px; font-weight: bold; text-align: center; margin: 60px 0; min-height: 100px; color: var(--main); line-height: 1.6; }
+        .btns { display: flex; gap: 20px; justify-content: center; }
+        .btns button { width: auto; min-width: 150px; padding: 15px 30px; font-size: 18px; font-weight:bold; cursor:pointer; border-radius:4px; }
+        .yes-btn { background: var(--main); color: var(--gold); border:1px solid var(--gold); }
+        .no-btn { background: #e0e0e0; color: #555; border: 1px solid #ccc; }
+        .person-img-container { text-align: center; margin-bottom: 20px; }
+        .person-img { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--gold); object-fit: cover; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .fallback-icon { font-size: 80px; line-height: 180px; display: inline-block; width: 180px; height: 180px; background: #fff; border-radius: 50%; border: 6px solid var(--gold); }
+        .type-name { font-size: 32px; text-align: center; color: var(--main); margin: 10px 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .person-name { text-align: center; color: #666; font-size: 16px; margin-bottom: 30px; }
+        .card { background: rgba(255,255,255,0.9); padding: 25px; border-radius: 8px; margin-top: 25px; border-left: 6px solid var(--gold); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; color: var(--accent); border-bottom: 1px dashed #ccc; padding-bottom: 8px; font-size: 20px; }
+        .white-space { white-space: pre-wrap; line-height: 1.8; text-align: justify; font-size: 15px; }
+        .timing-tag { display: inline-block; background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 14px; margin-bottom: 10px; font-weight: bold; font-family: sans-serif; }
+
+        /* --- 書籍紹介エリア --- */
+        .book-card {
+            background: #fff0f0; border: 2px solid var(--accent);
+            text-align: center; padding: 20px; margin-top: 40px; border-radius: 10px;
+        }
+        .book-title { font-weight: bold; font-size: 18px; margin: 10px 0; color: #333; }
+        .book-author { font-size: 14px; color: #666; margin-bottom: 15px; }
+        .amazon-btn {
+            display: inline-block; background: #ff9900; color: white; padding: 12px 30px;
+            border-radius: 5px; text-decoration: none; font-weight: bold; font-family: sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s;
+        }
+        .amazon-btn:hover { background: #e68a00; transform: translateY(-2px); }
+
+        /* --- SNSシェアボタン --- */
+        .share-container { margin-top: 40px; text-align: center; border-top: 1px solid var(--gold); padding-top: 30px; }
+        .share-title { color: var(--main); font-weight: bold; margin-bottom: 15px; font-size: 16px; letter-spacing: 1px; }
+        .share-btns { display: flex; gap: 15px; justify-content: center; }
+        .share-btn {
+            flex: 1; max-width: 220px; padding: 15px 0; border-radius: 50px;
+            color: white; font-weight: bold; font-size: 16px; border: 2px solid var(--gold);
+            cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center; font-family: sans-serif;
+        }
+        .btn-x { background: #000000; }
+        .btn-line { background: #06c755; }
+        .share-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); opacity: 0.9; }
+        .share-icon { margin-right: 10px; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="start-screen">
+        <h1>帝王救済・究極ハイブリッド鑑定</h1>
+        <p style="text-align:center; font-size:14px; color:#555;">四柱推命 × 九星気学 × 16タイプで読み解く、あなたの宿命と戦略</p>
+        <div class="setup-box">
+            <div class="field"><label>性別</label><select id="gender"><option>男性</option><option>女性</option><option>その他</option></select></div>
+            <div class="field"><label>生年月日</label><input type="date" id="birth-date"></div>
+            <div class="field"><label>現在の職種</label><input type="text" id="job" placeholder="例：ITエンジニア、営業職、経営者など"></div>
+            <button class="main-btn" onclick="startApp()">運命の扉を開く</button>
+        </div>
+    </div>
+
+    <div id="q-screen">
+        <div id="progress" style="text-align:center; color:var(--main); font-weight:bold; font-family:sans-serif;">第 1 / 30 問</div>
+        <div class="q-text" id="q-text"></div>
+        <div class="btns">
+            <button class="yes-btn" onclick="next('A')">そう思う</button>
+            <button class="no-btn" onclick="next('B')">思わない</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <div class="person-img-container" id="img-area"></div>
+        <h2 class="type-name" id="res-mbti"></h2>
+        <div class="person-name" id="res-person"></div>
+
+        <div class="card">
+            <div class="timing-tag" id="res-timing-tag">運気</div>
+            <h3>🔱 今、成すべき決断（九星気学）</h3>
+            <p id="res-timing-msg" class="white-space"></p>
+        </div>
+
+        <div class="card">
+            <h3>☯️ 宿命の刻印（四柱推命・算命学）</h3>
+            <p id="res-destiny" class="white-space"></p>
+        </div>
+
+        <div class="card">
+            <h3>📜 本質と希少性（16タイプ詳細解説）</h3>
+            <p id="res-desc" class="white-space"></p>
+        </div>
+
+        <div class="card">
+            <h3>🔥 ビジネス救済アドバイス</h3>
+            <p id="res-advice" class="white-space"></p>
+        </div>
+
+        <div class="book-card">
+            <h3 style="margin-top:0; color:var(--accent);">📚 悩めるあなたへの推薦図書</h3>
+            <p style="font-size:14px;">組織構造の欠陥と人間関係に疲れた時、<br>この一冊があなたの心の武器になります。</p>
+            <p class="book-title">『敗北論: 組織構造の欠陥と<br>人間関係に悩む全ての人へ』</p>
+            <p class="book-author">著者：三志</p>
+            <a href="https://www.amazon.co.jp/s?k=%E6%95%97%E5%8C%97%E8%AB%96+%E4%B8%89%E5%BF%97" target="_blank" class="amazon-btn">Amazonで詳細を見る</a>
+        </div>
+
+        <div class="share-container">
+            <p class="share-title">― この結果をシェアして仲間を探す ―</p>
+            <div class="share-btns">
+                <button class="share-btn btn-x" onclick="shareToX()">
+                    <span class="share-icon">𝕏</span> ポストする
+                </button>
+                <button class="share-btn btn-line" onclick="shareToLine()">
+                    <span class="share-icon">💬</span> LINEで送る
+                </button>
+            </div>
+        </div>
+
+        <button class="main-btn" onclick="location.reload()" style="margin-top:30px;">トップに戻る</button>
+    </div>
+</div>
+
+<script>
+const qs = [
+    { text: "会議では、聞き役よりも自分から意見を言う方だ", typeA: "E", typeB: "I" },
+    { text: "大人数のプレゼンよりも、1対1の交渉が得意だ", typeA: "I", typeB: "E" },
+    { text: "休憩時間は同僚と雑談してリフレッシュしたい", typeA: "E", typeB: "I" },
+    { text: "メールよりも電話や対面の方が話が早いと思う", typeA: "E", typeB: "I" },
+    { text: "ランチは一人で静かに食べたい", typeA: "I", typeB: "E" },
+    { text: "チームの士気を高めるのが得意だ", typeA: "E", typeB: "I" },
+    { text: "マルチタスクより、一つの仕事に没頭したい", typeA: "I", typeB: "E" },
+    { text: "仕事のやり方は、マニュアルより自分の感性を信じる", typeA: "N", typeB: "S" },
+    { text: "データや実績がない提案は、あまり信用できない", typeA: "S", typeB: "N" },
+    { text: "細かいミスよりも、全体のビジョンが大事だと思う", typeA: "N", typeB: "S" },
+    { text: "新しい技術より、確立された手法を好む", typeA: "S", typeB: "N" },
+    { text: "具体的な数字で示されると納得しやすい", typeA: "S", typeB: "N" },
+    { text: "現実よりも「理想の会社」について語るのが好きだ", typeA: "N", typeB: "S" },
+    { text: "独創的なアイデアを出すのが自分の役割だと思う", typeA: "N", typeB: "S" },
+    { text: "決断を下すとき、情に流されることはほとんどない", typeA: "T", typeB: "F" },
+    { text: "職場の人間関係がギスギスしていると仕事が手につかない", typeA: "F", typeB: "T" },
+    { text: "たとえ反対されても、論理的に正しい道を選びたい", typeA: "T", typeB: "F" },
+    { text: "部下や後輩には「成果」より「やる気」を評価したい", typeA: "F", typeB: "T" },
+    { text: "仕事の結果さえ良ければ、プロセスはどうでもいい", typeA: "T", typeB: "F" },
+    { text: "トラブルが起きると、パニックにならず冷静に分析する", typeA: "T", typeB: "F" },
+    { text: "周囲からどう思われているか、常に気になる", typeA: "F", typeB: "T" },
+    { text: "タスクは前日までにはすべて完了させておきたい", typeA: "J", typeB: "P" },
+    { text: "急な予定変更があっても、柔軟に楽しんで対応できる", typeA: "P", typeB: "J" },
+    { text: "デスクの周りはいつも整理整頓されている", typeA: "J", typeB: "P" },
+    { text: "締め切り間近にならないと、本気が出ないタイプだ", typeA: "P", typeB: "J" },
+    { text: "1日のスケジュールは朝のうちに細かく決める", typeA: "J", typeB: "P" },
+    { text: "一度決めたルールは、例外なく守るべきだ", typeA: "J", typeB: "P" },
+    { text: "規則よりも、その場のインスピレーションを重視する", typeA: "P", typeB: "J" },
+    { text: "リーダーを任されることが多い", typeA: "E", typeB: "I" },
+    { text: "将来の夢についてよく考える", typeA: "N", typeB: "S" }
+];
+
+const results = {
+    "INTJ":{name:"建築家",person:"織田信長",icon:"🏯",img:"https://upload.wikimedia.org/wikipedia/commons/6/6d/Oda_Nobunaga_Portrait_2.jpg",desc:"【本質：未来を設計する孤独な賢者】\nあなたは誰よりも遠い未来を見ています。非効率な慣習や感情論を嫌い、論理だけで世界を再構築しようとする姿勢は、時に「冷徹」と誤解されるかもしれません。しかし、その内側には、より良い世界を作りたいという熱い情熱が隠されています。\n\n【希少性と価値】\nあなたの「全体を俯瞰し、本質を見抜く力」は、日本社会において極めて希少です。多くの人が目の前の作業に追われる中、あなたは5年後、10年後の勝算を描ける唯一の存在。組織が道に迷った時、最後に頼られるのはあなたの羅針盤です。",pain:"バカげた社内政治や、意味のない会議への苛立ち。",advice:"あなたの正論は鋭すぎる剣です。組織は感情で動く生き物だと割り切り、週に一度は「無駄な雑談」を戦略的に行ってください。それが最強の武器になります。"},
+    "INTP":{name:"論理学者",person:"アインシュタイン",icon:"💡",img:"https://upload.wikimedia.org/wikipedia/commons/d/d3/Albert_Einstein_Head.jpg",desc:"【本質：真理を解き明かす発明家】\n既存の常識を疑い、ゼロから新しい概念を生み出す天才。単調な作業は苦痛ですが、難解なパズルには寝食を忘れて没頭します。\n\n【希少性と価値】\n「なぜ？」と問い続ける姿勢は、停滞した組織に風穴を開けます。あなたがいない組織は、イノベーションを起こせず衰退します。あなたは組織の脳そのものです。",pain:"ルーチンワークの退屈さと、考えを理解されない孤独。",advice:"興味のない仕事は「効率化ゲーム」として処理を。アイデアを図解して見せるだけで、周囲の評価は一変します。"},
+    "ENTJ":{name:"指揮官",person:"ナポレオン",icon:"🦅",img:"https://upload.wikimedia.org/wikipedia/commons/5/50/Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",desc:"【本質：勝利を義務付けられた将軍】\n生まれながらのリーダー。目標達成のためならどんな困難も突破します。効率と成果を愛し、あなたの辞書に「不可能」の文字はありません。\n\n【希少性と価値】\nリスクを取って前に進む胆力は、現代において最高級の資産です。あなたが旗を振らなければ誰も動けません。あなたは組織の推進力の源です。",pain:"周囲の成長スピードの遅さと、非効率な環境。",advice:"「待つこと」も戦略です。部下に答えを教えず、質問を投げて考えさせる余裕を持つことが、真の帝王への道です。"},
+    "ENTP":{name:"討論者",person:"ダ・ヴィンチ",icon:"🎨",img:"https://upload.wikimedia.org/wikipedia/commons/b/ba/Leonardo_self.jpg",desc:"【本質：混沌を愛するイノベーター】\n安定を退屈と感じ、常に新しい刺激を求めます。議論を通じて相手の本音を暴くのが得意な、破壊と創造のトリックスターです。\n\n【希少性と価値】\n空気を読まず「王様は裸だ」と言える存在は、硬直した組織の劇薬です。あなたの突飛な発想が次のスタンダードになります。",pain:"束縛されること、単純作業の繰り返し。",advice:"飽きっぽいのは「多才」な証拠。一つだけ「完了させる」習慣を持てば無敵です。"},
+    "INFJ":{name:"提唱者",person:"マザー・テレサ",icon:"🕊️",img:"https://upload.wikimedia.org/wikipedia/commons/d/d6/Mother_Teresa_1.jpg",desc:"【本質：深淵を見つめる聖人】\n最も希少なタイプ。静かですが、内側には揺るぎない信念と情熱があります。人の痛みを自分のことのように感じる深い共感力の持ち主。\n\n【希少性と価値】\n利益追求ばかりのビジネス界で、あなたの道徳的コンパスは組織の最後の良心です。あなたがいるだけで、殺伐とした職場に人間性が戻ります。",pain:"他人の負の感情に当てられ、消耗してしまうこと。",advice:"「心のシャッター」を下ろす練習を。全ての人を救うことはできません。まずは自分自身を救い、満たすことが最優先です。"},
+    "INFP":{name:"仲介者",person:"アンネ・フランク",icon:"📖",img:"https://upload.wikimedia.org/wikipedia/commons/a/af/Anne_Frank_1940_crop.jpg",desc:"【本質：理想を追い求める詩人】\n心の中に独自の美しい世界を持っています。金銭や地位よりも「意味があること」を重視。大切な価値観を守るためなら驚くほどの強さを発揮します。\n\n【希少性と価値】\n効率化で失われがちな「心」や「物語」を語れるあなたは、AIにも代替できない唯一無二のクリエイターです。",pain:"現実の厳しさと理想のギャップ、批判への弱さ。",advice:"仕事は「自分を表現する舞台」と割り切りましょう。苦手な事務作業は仲間に任せてOK。感性が死ぬ環境からは逃げてください。"},
+    "ENFJ":{name:"主人公",person:"キング牧師",icon:"📢",img:"https://upload.wikimedia.org/wikipedia/commons/8/84/Martin_Luther_King_Jr_NYWTS.jpg",desc:"【本質：人を導くカリスマ】\nあなたの言葉には魂が宿り、自然と人が集まります。他人の成長を自分のことのように喜べる、真の教育者であり指導者です。\n\n【希少性と価値】\nバラバラな個人の能力をまとめ上げ、チームとして機能させる力はあなただけの才能。あなたがいないとチームは方向性を見失います。",pain:"期待に応えようとしての自己犠牲、燃え尽き。",advice:"全員に好かれるのは無理です。自分のエネルギーの20%は、必ず「自分のためだけ」に使ってください。"},
+    "ENFP":{name:"運動家",person:"ウォルト・ディズニー",icon:"🐭",img:"https://upload.wikimedia.org/wikipedia/commons/d/df/Walt_Disney_1946.JPG",desc:"【本質：自由を愛する冒険家】\nワクワクすることに命を燃やします。ルーチンは苦手ですが、新しい可能性を見つけることに関しては天才的です。\n\n【希少性と価値】\nあなたの楽観性は、沈滞したムードを吹き飛ばす太陽です。常識にとらわれないアイデアが、行き詰まったプロジェクトに命を吹き込みます。",pain:"詳細な詰めや管理業務、孤独への恐怖。",advice:"「始めること」の天才であることを誇ってください。維持管理は得意な人に任せる仕組みを作りましょう。"},
+    "ISTJ":{name:"管理者",person:"ワシントン",icon:"⚖️",img:"https://upload.wikimedia.org/wikipedia/commons/b/b6/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg",desc:"【本質：社会を支える大黒柱】\n責任感が強く、一度引き受けたことは必ずやり遂げます。派手さはありませんが、あなたの仕事にはミスがなく、絶対的な信頼があります。\n\n【希少性と価値】\n世の中のシステムが回っているのはあなたのおかげです。あなたがいないと、契約は守られず社会は混乱します。あなたは組織の背骨です。",pain:"無計画な変更、急なトラブル、ルールの無視。",advice:"変化を「敵」ではなく「ルールの更新」と捉えてみてください。相手の感情への配慮をひとつまみ入れるだけで完璧です。"},
+    "ISFJ":{name:"擁護者",person:"ナイチンゲール",icon:"🏥",img:"https://upload.wikimedia.org/wikipedia/commons/1/13/Florence_Nightingale_two.jpg",desc:"【本質：組織と人間関係の最後の砦】\n全人口の約13%を占め、社会を支える最も重要な存在です。圧倒的な実務能力と記憶力を持ち、目立たぬ場所で完璧なサポートをこなします。\n\n【希少性と価値】\n変化の激しい現代において、あなたの持つ『変わらない誠実さ』は超希少な資質。あなたがいない組織は、実行段階で崩壊します。あなたは集団を繋ぎ止める『強力な接着剤』なのです。",pain:"感謝されない献身、断れない性格によるオーバーワーク。",advice:"自己犠牲で自分を削りすぎないでください。「NO」と言うことは自分を守る仕事です。あなたの価値をもっと主張していいのです。"},
+    "ESTJ":{name:"幹部",person:"ロックフェラー",icon:"🏢",img:"https://upload.wikimedia.org/wikipedia/commons/6/6f/John_D._Rockefeller_1885.jpg",desc:"【本質：秩序を作る実行者】\n曖昧な状況を嫌い、明確なルールと手順を作り上げます。感情論に流されず結果にコミットする、組織運営のプロフェッショナルです。\n\n【希少性と価値】\n混沌とした状況を整理し道筋をつけることができるのはあなただけ。あなたがいないと決定は先送りされ、組織は方向を見失います。",pain:"ルールを守らない人への怒り、非効率なやり方。",advice:"「遊び」や「無駄」も組織の潤滑油です。部下の失敗を許容する「余裕」を見せることで、カリスマ性は完成します。"},
+    "ESFJ":{name:"領事",person:"テイラー・スウィフト",icon:"🎤",img:"https://upload.wikimedia.org/wikipedia/commons/b/b5/191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.jpg",desc:"【本質：愛されるコミュニティリーダー】\n人との繋がりを何よりも大切にします。場の空気を読む能力に長け、あなたの周りには常に笑顔が溢れています。\n\n【希少性と価値】\nAI化が進む世界で、あなたの「人間力」と「ホスピタリティ」は代替できない価値です。あなたがいない職場は冷たく殺伐とします。あなたは組織のオアシスです。",pain:"批判されることへの恐怖、人間関係のトラブル。",advice:"「自分軸」を持ってください。他人の評価があなたの価値ではありません。時には嫌われる勇気を持つことで、より深い信頼関係が築けます。"},
+    "ISTP":{name:"巨匠",person:"宮本武蔵",icon:"⚔️",img:"https://upload.wikimedia.org/wikipedia/commons/a/a2/Miyamoto_Musashi_Self_Portrait.jpg",desc:"【本質：孤高のテクニシャン】\n言葉よりも行動で語ります。道具を使いこなす天才で、トラブルが起きても動じず淡々と解決するクールな職人肌です。\n\n【希少性と価値】\n緊急事態において、あなたほど頼りになる人はいません。事実だけを見て最適解を出せる能力は、組織の危機を救う切り札です。",pain:"干渉されること、意味のない会議、非合理な指示。",advice:"一匹狼でいるためのスキルを極めてください。「代わりのいない専門家」になれば、誰もあなたを縛れなくなります。"},
+    "ISFP":{name:"冒険家",person:"マイケル・ジャクソン",icon:"🕺",img:"https://upload.wikimedia.org/wikipedia/commons/3/31/Michael_Jackson_in_1988.jpg",desc:"【本質：美を愛する自由人】\n型にはまらない独自の感性を持っています。競争よりも「今、自分が何を感じているか」を大切にする平和主義者です。\n\n【希少性と価値】\n効率一辺倒のビジネス界において、あなたの感性は一服の清涼剤です。デザインやアートなど、人の心に触れる分野で魔法を生み出せます。",pain:"厳しいノルマ、競争、自分を殺して働くこと。",advice:"言葉が苦手なら成果物で示しましょう。ストレスが溜まったら自然の中に逃げてください。感性が死ねばあなたではなくなります。"},
+    "ESTP":{name:"起業家",person:"坂本龍馬",icon:"⛵",img:"https://upload.wikimedia.org/wikipedia/commons/1/17/Sakamoto_Ryoma_portrait.jpg",desc:"【本質：嵐を呼ぶ風雲児】\n考える前に飛び込みます。スリルとリスクを愛し、ピンチすらも楽しんでしまう、停滞した空気をぶち壊すエネルギーの塊です。\n\n【希少性と価値】\n先が見えない時代には、あなたのような「突破力」のある人間がリーダーになります。誰もやりたがらない火中の栗を拾いチャンスに変える力は最強の武器です。",pain:"退屈、じっとしていること、長期計画。",advice:"短期決戦を繰り返すスタイルで仕事を設計しましょう。フォロー役の仲間を大切にすれば、天下を取れます。"},
+    "ESFP":{name:"エンターテイナー",person:"マリリン・モンロー",icon:"💄",img:"https://upload.wikimedia.org/wikipedia/commons/4/4e/Marilyn_Monroe%2C_at_a_production_still_of_The_Prince_and_the_Showgirl_%281957%29.jpg",desc:"【本質：世界を彩るスーパースター】\nあなたが笑えば世界も笑います。生まれながらのパフォーマーであり、退屈な日常をドラマチックに変える天才です。\n\n【希少性と価値】\n暗いニュースが多い現代で、あなたの明るさは希望そのもの。人を楽しませる力は、立派なビジネススキルです。",pain:"孤独、無視されること、厳しい叱責。",advice:"自分を安売りしないでください。あなたの輝きが正当に評価される場所（広報、営業、接客）を選びましょう。あなたは主役になるために生まれてきました。"}
+};
+
+let cur = 0; let sc = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+
+function startApp() {
+    if(!document.getElementById('birth-date').value) return alert("生年月日を入力してください");
+    document.getElementById('start-screen').style.display='none';
+    document.getElementById('q-screen').style.display='block';
+    showQ();
+}
+function showQ() {
+    if(cur < qs.length) {
+        document.getElementById('progress').innerText = `第 ${cur+1} / ${qs.length} 問`;
+        document.getElementById('q-text').innerText = qs[cur].text;
+    } else { showRes(); }
+}
+function next(ans) {
+    let t = (ans === 'A') ? qs[cur].typeA : qs[cur].typeB;
+    sc[t]++; cur++; showQ();
+}
+
+function getFortune(birth) {
+    const y = new Date(birth).getFullYear();
+    const sum = y.toString().split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);
+    const star = (11 - (sum % 9)) % 9 || 9;
+    const msgs = ["","【一白水星：準備の時】\n今は水面下で力を蓄える時期です。焦って結果を求めず、勉強やスキルアップに投資してください。","【二黒土星：育成の時】\n土台を固める時です。周囲をサポートし、信頼残高を増やしましょう。地味な努力が後で爆発します。","【三碧木星：発展の時】\n朝日が昇るような勢いがあります。新しいアイデアは即実行へ。恐れずに一歩を踏み出してください。","【四緑木星：整いの時】\n人間関係や環境が整い、追い風が吹きます。社交を広げ、人との縁を大切にすることで運が開けます。","【五黄土星：変革の時】\n帝王の星が巡ってきました。古い自分を壊し、再生するタイミング。腐れ縁や悪習慣を断ち切りましょう。","【六白金星：結実の時】\nこれまでの努力が形になります。リーダーシップを発揮し、自信を持って大きな決断を下してください。","【七赤金星：収穫の時】\n楽しむことで運気が上がります。食事会やイベントには積極的に参加を。ユーモアが幸運の鍵です。","【八白土星：変化の時】\n山のように動じない姿勢が吉。現状維持よりも、改革や改善に目を向けましょう。停滞は変化の前触れです。","【九紫火星：明暗の時】\nスポットライトが当たります。隠していたことが表に出やすいので、誠実な対応を。美意識を磨くと吉。"];
+    return msgs[star];
+}
+
+function getDestiny(birth) {
+    const d = new Date(birth);
+    const base = new Date("1900/01/01");
+    const diff = Math.floor((d - base)/(86400000)) + 50;
+    const kans = ["癸(雨)","甲(大樹)","乙(草花)","丙(太陽)","丁(灯火)","戊(山)","己(大地)","庚(刀)","辛(宝石)","壬(海)"];
+    return kans[diff % 10];
+}
+
+function showRes() {
+    document.getElementById('q-screen').style.display='none';
+    document.getElementById('result-screen').style.display='block';
+    
+    const birth = document.getElementById('birth-date').value;
+    const mbti = (sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
+    const data = results[mbti];
+    const fortuneMsg = getFortune(birth);
+    const destinyKan = getDestiny(birth);
+
+    const imgDiv = document.getElementById('img-area');
+    imgDiv.innerHTML = `<img class="person-img" src="${data.img}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"><div class="fallback-icon" style="display:none;">${data.icon}</div>`;
+
+    document.getElementById('res-mbti').innerText = `${mbti}：${data.name}`;
+    document.getElementById('res-person').innerText = `歴史的共鳴者：${data.person}`;
+    document.getElementById('res-timing-msg').innerText = fortuneMsg;
+    document.getElementById('res-destiny').innerText = `あなたの魂のシンボルは「${destinyKan}」です。\nこの性質は、生涯変わらないあなたの核となります。`;
+    document.getElementById('res-desc').innerText = data.desc;
+    document.getElementById('res-advice').innerText = `【悩みの根源】\n${data.pain}\n\n【救済の処方箋】\n${data.advice}`;
+    window.scrollTo(0,0);
+}
+
+// --- SNSシェア機能 ---
+function getShareData() {
+    const mbti = document.getElementById('res-mbti').innerText;
+    const person = document.getElementById('res-person').innerText;
+    // ★重要★ 公開時にここを自分のGitHub PagesのURLに書き換えてください！
+    // 修正済み：文法エラーを直しました
+    const url = "https://kokodiagnosis.github.io/-/"; 
+    
+    const text = `【帝王救済・究極ハイブリッド鑑定】\n私の宿命は…\n👑 ${mbti}\n${person} でした。\n\nあなたの才能と戦略も診断してみる？\n👇`;
+    return { text, url };
+}
+
+function shareToX() {
+    const data = getShareData();
+    const hashtags = "帝王学診断,ビジネス救済,16タイプ";
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(data.text)}&url=${encodeURIComponent(data.url)}&hashtags=${hashtags}`;
+    window.open(shareUrl, '_blank');
+}
+
+function shareToLine() {
+    const data = getShareData();
+    const shareUrl = `https://line.me/R/msg/text/?${encodeURIComponent(data.text + "\n" + data.url)}`;
+    window.open(shareUrl, '_blank');
+}
+</script>
+</body>
+</html>
